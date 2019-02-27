@@ -76,7 +76,13 @@ contract('TenDaysWakeUpDevil', async (accounts) => {
             expectedSuccesses.push(false)
         }
 
-        // assert
+        // assert tx
+        let event = tx.logs[0].args
+        assert.equal(user, event._userAddress)
+        assert.equal(1, event._id)
+        assert.equal(startAt, event._startAt)
+        
+        // assert get
         let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
         assert.equal(1, result.id)
         for(let i=0; i<10; i++) {
@@ -102,10 +108,16 @@ contract('TenDaysWakeUpDevil', async (accounts) => {
         // wakeup
         let tx = await tenDaysWakeUpDevil.wakeUp(1, {from: user})
 
-        // assert
+        // assert tx
+        let event = tx.logs[0].args
+        assert.equal(1, event._id)
+        assert.equal(1, event._day)
+        
+        // assert get
         let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
         assert.equal(1, result.id)
         assert.equal(true, result.successes[0])
+        assert.equal(true, result.exists)
     })
 
     it('should wakeup last day', async () => {
@@ -117,10 +129,36 @@ contract('TenDaysWakeUpDevil', async (accounts) => {
         // wakeup
         let tx = await tenDaysWakeUpDevil.wakeUp(10, {from: user})
 
-        // assert
+        // assert tx
+        let event = tx.logs[0].args
+        assert.equal(1, event._id)
+        assert.equal(10, event._day)
+
+        // assert get
         let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
         assert.equal(1, result.id)
         assert.equal(true, result.successes[9])
+        assert.equal(true, result.exists)
+    })
+
+    it('should finish', async () => {
+        const tenDaysWakeUpDevil = await TenDaysWakeUpDevil.deployed()
+
+        // set time forward
+        await increaseTime(60 * 60 * 24 * 1)
+
+        // wakeup
+        let tx = await tenDaysWakeUpDevil.finish({from: user})
+
+        // assert tx
+        let event = tx.logs[0].args
+        assert.equal(1, event._id)
+        assert.equal(8, event._oversleepCount)
+        assert.equal(2.4, web3.utils.fromWei(event._lostETH))
+
+        // assert get
+        let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
+        assert.equal(false, result.exists)
     })
 
 })

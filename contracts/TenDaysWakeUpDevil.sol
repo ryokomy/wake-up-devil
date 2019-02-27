@@ -5,6 +5,13 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
+
+/**
+ * @title RibinHood
+ * @author Ryo Komiyama <https://github.com/ryokomy>
+ */
+
+
 /**
  * @title TenDaysWakeUpDevil
  * @author Ryo Komiyama <https://github.com/ryokomy>
@@ -34,6 +41,14 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
         uint8 indexed _day,
         uint32 _wakeUpAt
     );
+    event FinishEvent(
+        uint256 indexed _id,
+        uint8 _oversleepCount,
+        uint256 _lostETH,
+        uint32 _finishAt
+    );
+
+    uint256 public totalOversleepCount = 0;
 
     /**
      * @notice
@@ -134,11 +149,40 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
         emit WakeUpEvent(wakeUpUnit.id, _day, uint32(now));
     }
 
+    /**
+     * @notice
+     * finish function
+     */
+    function finish() nonReentrant() external
+    {
+        WakeUpUnit memory wakeUpUnit = _userAddressToWakeUpUnit[msg.sender];
+        require(wakeUpUnit.exists == true, "user doesn't exist");
+        // solium-disable-next-line security/no-block-members
+        require(wakeUpUnit.wakeUpAts[9] < now, "contract haven't expired yet");
 
+        uint256 oversleepCount = 0;
+        for(uint256 i = 0; i < 10; i++) {
+            if(!wakeUpUnit.successes[i]) {
+                oversleepCount++;
+            }
+        }
+        totalOversleepCount = totalOversleepCount.add(oversleepCount);
 
-    // function RobinHood(address _userAddress) external {
-        
-    // }
+        // delete mapping
+        delete _userAddressToWakeUpUnit[msg.sender];
+
+        // devil takes ETH
+        uint256 lostETH = oversleepCount.mul(lostETHPerOversleep());
+        totalLostETH = totalLostETH.add(lostETH);
+
+        // return deposit
+        if(lostETH != depositETHAmount) {
+            msg.sender.transfer(depositETHAmount.sub(lostETH));
+        }
+
+        // solium-disable-next-line security/no-block-members
+        emit FinishEvent(wakeUpUnit.id, uint8(oversleepCount), lostETH, uint32(now));
+    }
 
     /**
      */
@@ -148,12 +192,12 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
 
     /**
      * @notice
-     * lostEHTPerFailure function
+     * lostETHPerOversleep function
      *
-     * @return lost ETH amount per failure
+     * @return lost ETH amount per oversleep
      */
-    function lostEHTPerFailure() public view returns (uint256) {
-        return (depositETHAmount / 10);
+    function lostETHPerOversleep() public view returns (uint256) {
+        return depositETHAmount.div(10);
     }
 
     /**
