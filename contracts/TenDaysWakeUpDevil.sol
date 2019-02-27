@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
-import "../submodules/solidity-util/lib/SafeMath16.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 /**
  * @title TenDaysWakeUpDevil
@@ -11,16 +11,14 @@ import "../submodules/solidity-util/lib/SafeMath16.sol";
  */
 contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
 
-    using SafeMath16 for uint16;
+    using SafeMath for uint256;
 
     /**
      * @notice
      * struct for wakeup data
      */
-    struct WakeUps {
-        uint16 userId;
-        uint8 successCount;
-        uint8 withdrawCount;
+    struct WakeUpUnit {
+        uint256 id;
         uint32[10] wakeUpAts;
         bool[10] successes;
         bool exists;
@@ -28,7 +26,13 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
 
     event RegisterEvent(
         address indexed _userAddress,
+        uint256 indexed _id,
         uint32 _startAt
+    );
+    event WakeUpEvent(
+        uint256 indexed _id,
+        uint8 indexed _day,
+        uint32 _wakeUpAt
     );
 
     /**
@@ -44,19 +48,13 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
      */
     uint256 public depositETHAmount = 3 ether;
 
-    uint16 public numberOfUsers = 0;
+    uint256 public numberOfWakeUpUnits = 0;
 
-    /**
-     * @notice
-     * mapping from userId to address
-     */
-    mapping(uint16 => address) internal _userIdToAddress;
- 
     /**
      * @notice
      * mapping from user address to wakeup data
      */
-    mapping(address => WakeUps) internal _userAddressToWakeUps;
+    mapping(address => WakeUpUnit) internal _userAddressToWakeUpUnit;
 
     /**
      * @notice
@@ -70,47 +68,73 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
      * register function
      * deposit is needed for register
      *
-     * @param startAt is the first wakeup time in Unix Time
+     * @param _startAt is the first wakeup time in Unix Time
      */
-    function register(uint32 startAt) external nonReentrant() payable
+    function register(uint32 _startAt) external nonReentrant() payable
     {
         // higher value than depositETHAmont is needed for register
         require(msg.value >= depositETHAmount, "deposit ETH is not enough");
 
         // one address can register only once (TODO: fix this limitation)
-        require(_userAddressToWakeUps[msg.sender].exists == false, "user is already registered");
+        require(_userAddressToWakeUpUnit[msg.sender].exists == false, "user is already registered");
 
         // check startAt
         // solium-disable-next-line security/no-block-members
-        require((startAt > now) && (startAt < now + 5 days), "invalid start time");
+        require((_startAt > now) && (_startAt < now + 5 days), "invalid start time");
 
-        // increment numberOfUsers
-        numberOfUsers = numberOfUsers.add(1);
+        // increment numberOfWakeUpUnits
+        numberOfWakeUpUnits = numberOfWakeUpUnits.add(1);
 
-        // set _userIdToAddress mapping
-        _userIdToAddress[numberOfUsers] = msg.sender;
-
-        // create WakeUps
+        // create WakeUpUnit
         uint32[10] memory wakeUpAts;
         bool[10] memory successes;
-        WakeUps memory wakeUps = WakeUps({
-            userId: numberOfUsers,
-            successCount: 0,
-            withdrawCount: 0,
+        WakeUpUnit memory wakeUpUnit = WakeUpUnit({
+            id: numberOfWakeUpUnits,
             wakeUpAts: wakeUpAts,
             successes: successes,
             exists: true
         });
         for (uint i = 0; i < 10; i++) {
-            wakeUps.wakeUpAts[i] = uint32(startAt + i * (1 days));
+            wakeUpUnit.wakeUpAts[i] = uint32(_startAt + i * (1 days));
         }
-        _userAddressToWakeUps[msg.sender] = wakeUps;
+        _userAddressToWakeUpUnit[msg.sender] = wakeUpUnit;
 
         // return extra amount of ETH
         if (msg.value > depositETHAmount) {
             msg.sender.transfer(msg.value - depositETHAmount);
         }
+
+        emit RegisterEvent(msg.sender, numberOfWakeUpUnits, _startAt);
     }
+
+    /**
+     * @notice
+     * wakeUp function
+     *
+     * @param _day is counted from 1 to 10
+     */
+    function wakeUp(uint8 _day) external
+    {
+        require(1 <= _day && _day <= 10, "given day is not in range");
+
+        WakeUpUnit memory wakeUpUnit = _userAddressToWakeUpUnit[msg.sender];
+        require(wakeUpUnit.exists == true, "user doesn't exist");
+
+        uint256 dayIndex = _day - 1;
+        require(wakeUpUnit.successes[dayIndex] == false, "already succeeded to wake up");
+
+        // solium-disable-next-line security/no-block-members
+        bool timeCondition = (wakeUpUnit.wakeUpAts[dayIndex] - 5 minutes < now) && (now < wakeUpUnit.wakeUpAts[dayIndex] + 5 minutes);
+        require(timeCondition, "wakeup time is invalid");
+
+        // success to wake up
+        _userAddressToWakeUpUnit[msg.sender].successes[dayIndex] = true;
+
+        // solium-disable-next-line security/no-block-members
+        emit WakeUpEvent(wakeUpUnit.id, _day, uint32(now));
+    }
+
+
 
     // function RobinHood(address _userAddress) external {
         
@@ -118,8 +142,8 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
 
     /**
      */
-    function userAddressToWakeUps(address _userAddress) external view returns (WakeUps memory) {
-        return _userAddressToWakeUps[_userAddress];
+    function userAddressToWakeUpUnit(address _userAddress) external view returns (WakeUpUnit memory) {
+        return _userAddressToWakeUpUnit[_userAddress];
     }
 
     /**
