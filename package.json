@@ -1,0 +1,20 @@
+{
+  "name": "wakeup-contract",
+  "version": "1.0.0",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "deploy": "npx truffle deploy",
+    "deploy:reset": "npx truffle deploy --reset",
+    "test": "truffle compile && npx truffle test"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^2.1.2",
+    "truffle": "^5.0.3"
+  },
+  "devDependencies": {},
+  "author": "ryokomy",
+  "license": "ISC"
+}

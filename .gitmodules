@@ -1,0 +1,3 @@
+[submodule "submodules/solidity-util"]
+	path = submodules/solidity-util
+	url = git@github.com:ryokomy/solidity-util.git
