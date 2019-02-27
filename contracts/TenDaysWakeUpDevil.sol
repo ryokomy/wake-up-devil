@@ -4,19 +4,13 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-
-
-/**
- * @title RibinHood
- * @author Ryo Komiyama <https://github.com/ryokomy>
- */
-
+import "./Devil.sol";
 
 /**
  * @title TenDaysWakeUpDevil
  * @author Ryo Komiyama <https://github.com/ryokomy>
  */
-contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
+contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard, Devil {
 
     using SafeMath for uint256;
 
@@ -47,6 +41,10 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
         uint256 _lostETH,
         uint32 _finishAt
     );
+    event StolenEvent(
+        uint256 _stolenETH,
+        uint32 _stolenAt
+    );
 
     uint256 public totalOversleepCount = 0;
 
@@ -73,9 +71,19 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
 
     /**
      * @notice
-     * constructor
+     * This is the address of RobinHood who can steal Devil's ETH
      */
-    constructor() public {
+    address payable public robinHoodAddress;
+
+
+    /**
+     * @notice
+     * constructor
+     *
+     * @param _robinHoodAddress is contract address of RobinHood
+     */
+    constructor(address payable _robinHoodAddress) public {
+        robinHoodAddress = _robinHoodAddress;
     }
 
     /**
@@ -151,9 +159,10 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
 
     /**
      * @notice
-     * finish function
+     * This function make WakeUpUnit finish
+     * Overslept days are counted and Devil steal deposited ETH based on it.
      */
-    function finish() nonReentrant() external
+    function finish() external nonReentrant()
     {
         WakeUpUnit memory wakeUpUnit = _userAddressToWakeUpUnit[msg.sender];
         require(wakeUpUnit.exists == true, "user doesn't exist");
@@ -176,7 +185,7 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
         totalLostETH = totalLostETH.add(lostETH);
 
         // return deposit
-        if(lostETH != depositETHAmount) {
+        if(lostETH < depositETHAmount) {
             msg.sender.transfer(depositETHAmount.sub(lostETH));
         }
 
@@ -185,6 +194,21 @@ contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard {
     }
 
     /**
+     * @notice
+     * This function is called by RobinHood contract
+     * RobinHood steals Devil's ETH
+     */
+    function stolen() external nonReentrant() {
+        require(msg.sender == robinHoodAddress, "No one can steal devil's ETH apart from Robin Hood");
+        uint256 _stolenETH = totalLostETH;
+        totalLostETH = 0;
+        robinHoodAddress.transfer(_stolenETH);
+        emit StolenEvent(_stolenETH, uint32(now));
+    }
+
+    /**
+     * @notice
+     * getter of WakeUpUnit contract
      */
     function userAddressToWakeUpUnit(address _userAddress) external view returns (WakeUpUnit memory) {
         return _userAddressToWakeUpUnit[_userAddress];

@@ -1,3 +1,4 @@
+const RobinHood = artifacts.require('RobinHood')
 const TenDaysWakeUpDevil = artifacts.require('TenDaysWakeUpDevil')
 
 let baseTime
@@ -159,6 +160,31 @@ contract('TenDaysWakeUpDevil', async (accounts) => {
         // assert get
         let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
         assert.equal(false, result.exists)
+    })
+
+    it('should steal devil ETH', async () => {
+        const robinHood = await RobinHood.deployed()
+        const tenDaysWakeUpDevil = await TenDaysWakeUpDevil.deployed()
+
+        // steal
+        console.log(robinHood.address)
+        console.log(await robinHood.donationAddress())
+        console.log(tenDaysWakeUpDevil.address)
+        console.log(await tenDaysWakeUpDevil.robinHoodAddress())
+        console.log(web3.utils.fromWei(await web3.eth.getBalance(tenDaysWakeUpDevil.address)))
+        let tx = await robinHood.steal(tenDaysWakeUpDevil.address, {from: user})
+        console.log(tx.logs[0].args)
+
+
+        // // assert tx
+        // let event = tx.logs[0].args
+        // assert.equal(1, event._id)
+        // assert.equal(8, event._oversleepCount)
+        // assert.equal(2.4, web3.utils.fromWei(event._lostETH))
+
+        // // assert get
+        // let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
+        // assert.equal(false, result.exists)
     })
 
 })

@@ -1,0 +1,197 @@
+{
+  "contractName": "Devil",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "stolen",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity >=0.4.99 <0.6.0;\n\nimport \"openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol\";\n\ninterface Devil {\n    function stolen() external;\n}\n",
+  "sourcePath": "/Users/ryoheikomiyama/src/github.com/ryokomy/wakeup-contract/contracts/Devil.sol",
+  "ast": {
+    "absolutePath": "/Users/ryoheikomiyama/src/github.com/ryokomy/wakeup-contract/contracts/Devil.sol",
+    "exportedSymbols": {
+      "Devil": [
+        6
+      ]
+    },
+    "id": 7,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".99",
+          "<",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:32:0"
+      },
+      {
+        "absolutePath": "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol",
+        "file": "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol",
+        "id": 2,
+        "nodeType": "ImportDirective",
+        "scope": 7,
+        "sourceUnit": 892,
+        "src": "34:67:0",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 6,
+        "linearizedBaseContracts": [
+          6
+        ],
+        "name": "Devil",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "stolen",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "140:2:0"
+            },
+            "returnParameters": {
+              "id": 4,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "151:0:0"
+            },
+            "scope": 6,
+            "src": "125:27:0",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 7,
+        "src": "103:51:0"
+      }
+    ],
+    "src": "0:155:0"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/ryoheikomiyama/src/github.com/ryokomy/wakeup-contract/contracts/Devil.sol",
+    "exportedSymbols": {
+      "Devil": [
+        6
+      ]
+    },
+    "id": 7,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".99",
+          "<",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:32:0"
+      },
+      {
+        "absolutePath": "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol",
+        "file": "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol",
+        "id": 2,
+        "nodeType": "ImportDirective",
+        "scope": 7,
+        "sourceUnit": 892,
+        "src": "34:67:0",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 6,
+        "linearizedBaseContracts": [
+          6
+        ],
+        "name": "Devil",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "stolen",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "140:2:0"
+            },
+            "returnParameters": {
+              "id": 4,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "151:0:0"
+            },
+            "scope": 6,
+            "src": "125:27:0",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 7,
+        "src": "103:51:0"
+      }
+    ],
+    "src": "0:155:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-02-27T16:39:36.298Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
