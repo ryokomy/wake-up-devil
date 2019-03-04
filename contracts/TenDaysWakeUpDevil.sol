@@ -1,7 +1,6 @@
 pragma solidity >=0.4.99 <0.6.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./Devil.sol";
@@ -10,7 +9,7 @@ import "./Devil.sol";
  * @title TenDaysWakeUpDevil
  * @author Ryo Komiyama <https://github.com/ryokomy>
  */
-contract TenDaysWakeUpDevil is Ownable, ReentrancyGuard, Devil {
+contract TenDaysWakeUpDevil is ReentrancyGuard, Devil {
 
     using SafeMath for uint256;
 
