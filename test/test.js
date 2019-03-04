@@ -167,24 +167,25 @@ contract('TenDaysWakeUpDevil', async (accounts) => {
         const tenDaysWakeUpDevil = await TenDaysWakeUpDevil.deployed()
 
         // steal
-        console.log(robinHood.address)
-        console.log(await robinHood.donationAddress())
-        console.log(tenDaysWakeUpDevil.address)
-        console.log(await tenDaysWakeUpDevil.robinHoodAddress())
-        console.log(web3.utils.fromWei(await web3.eth.getBalance(tenDaysWakeUpDevil.address)))
         let tx = await robinHood.steal(tenDaysWakeUpDevil.address, {from: user})
-        console.log(tx.logs[0].args)
 
+        // assert get
+        assert.equal(2.4, web3.utils.fromWei(await web3.eth.getBalance(robinHood.address)))
+        assert.equal(0, await tenDaysWakeUpDevil.totalLostETH())
+    })
 
-        // // assert tx
-        // let event = tx.logs[0].args
-        // assert.equal(1, event._id)
-        // assert.equal(8, event._oversleepCount)
-        // assert.equal(2.4, web3.utils.fromWei(event._lostETH))
+    it('should provide ETH with donationAddress', async () => {
+        const robinHood = await RobinHood.deployed()
 
-        // // assert get
-        // let result = await tenDaysWakeUpDevil.userAddressToWakeUpUnit(user)
-        // assert.equal(false, result.exists)
+        // steal
+        let tx = await robinHood.provide({from: user})
+
+        // assert tx
+        let event = tx.logs[0].args
+        assert.equal(2.4, web3.utils.fromWei(event._amount))
+        
+        // assert get
+        assert.equal(0, web3.utils.fromWei(await web3.eth.getBalance(robinHood.address)))
     })
 
 })

@@ -25,6 +25,7 @@ contract RobinHood is ReentrancyGuard {
     address payable public donationAddress = 0xB9407f0033DcA85ac48126a53E1997fFdE04B746;
 
     constructor() public {}
+    function() external payable {}
 
     function steal(address _devilAddress) external {
         Devil devil = Devil(_devilAddress);
