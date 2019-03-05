@@ -1,0 +1,50 @@
+@startuml SEQUENCE_SIMPLE_JP
+
+actor User
+database UserWallet
+participant Devil
+database DevilWallet
+participant RobinHood
+database RobinHoodWallet
+actor Anyone
+actor UNICEF
+database UNICEFWallet
+
+group User Devil Interaction
+	
+== register ==
+User -> Devil: call register function with start time
+UserWallet -> DevilWallet: 3ETH for deposit
+User <-- Devil: success
+
+== wakeUp (success) ==
+User -> Devil: call wakeUp function with day
+User <-- Devil: success
+
+== wakeUp (fail) ==
+User -> Devil: call wakeUp function with day
+User <- Devil: fail
+
+== finish ==
+User -> Devil: call finish function
+UserWallet <- DevilWallet: 3ETH - 0.3ETH * overslept
+User <-- Devil: success
+
+end
+
+group RobinHood Activity
+
+== steal ==
+RobinHood <- Anyone: call steal function
+Devil <- RobinHood: call stolen function
+DevilWallet -> RobinHoodWallet: total ETH which users lost
+RobinHood --> Anyone: success
+
+== provide ==
+RobinHood <- Anyone: call provide function
+RobinHoodWallet -> UNICEFWallet: total ETH which RobinHood stole from Devil
+RobinHood --> Anyone: success
+
+end
+
+@enduml

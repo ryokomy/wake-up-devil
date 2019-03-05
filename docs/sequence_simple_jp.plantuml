@@ -1,0 +1,46 @@
+@startuml SEQUENCE_SIMPLE_JP
+
+actor User
+database Userの財布
+participant Devil
+database Devilの財布
+participant RobinHood
+database RobinHoodの財布
+actor UNICEF
+database UNICEFの財布
+
+group Userは毎朝早起きするためにDevilと契約する。早起きできないとお金を奪われる。
+	
+== UserとDevilの契約 ==
+User -> Devil: 明日から10日間、朝7時に起床報告をします。保証金として、3ETH (約50,000円) をお受け取りください。
+Userの財布 -> Devilの財布: 3ETH (約50,000円)
+User <- Devil: １日寝坊するごとに、0.3ETH (約5,000円) 奪うからな。
+
+== UserからDevilへの起床報告(成功) ==
+User -> Devil: おはようございます。
+User <- Devil: 今日は6:55から7:05の間に報告できたな。
+
+== UserからDevilへの起床報告(失敗) ==
+User -> Devil: おはようございます。
+User <- Devil: 6:55から7:05の間じゃないな。今日の分の0.3ETH (約5,000円) は俺がもらおう。
+
+== UserとDevilの契約終了 ==
+User -> Devil: 10日間経ちましたので、お預けしたお金の返却をお願いします。
+User <- Devil: お前は10日間のうち2日間寝坊したので、返却は2.4ETH (約40,000円) だな。寝坊分の0.6ETH (約10,000円) は俺がもらう。
+Userの財布 <- Devilの財布: 2.4ETH (約40,000円)
+
+end
+
+group RobinHoodはDevilからお金を盗み、UNICEFに寄付する。
+
+== RobinHoodがDevilからお金を盗む ==
+Devil <- RobinHood: ユーザーから奪ったお金盗むぞ。
+Devilの財布 -> RobinHoodの財布: 0.6ETH (約10,000円)
+
+== RobinHoodがUNICEFに寄付をする ==
+RobinHood -> UNICEF: Devilからお金を盗んだので、使ってください。
+RobinHoodの財布 -> UNICEFの財布: 0.6ETH (約10,000円)
+
+end
+
+@enduml
