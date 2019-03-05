@@ -1,17 +1,19 @@
-# :smiling_imp: wake-up-devil :smiling_imp:
+# :smiling_imp: WAKE UP DEVIL :smiling_imp:
 
-## Abstract :memo:
-Ethereum smart contracts which help us to wake up early every morning.  
+## What is WakeUpDevil :memo: ?
+WakeUpDevil is Ethereum smart contracts which help us to wake up early every morning.  
 There are two main contracts (two main roles).  
 1. Devil (TenDaysWakeUpDevil Contract)
 2. RobinHood (RobinHood Contract)
 
-How to intereact with these contracts? Please refer to the following figures.
+You have to pay to Devil when you oversleep.  
+RobinHood steals it from devil and send it to [UNICEF donation address](https://www.unicef.org.nz/donate-in-crypto).
+
+Please refer to the following sequence figures for more detail. 
 
 ## Important :fire:
-**There is no owner :fire: !!  
-No one can break a promise with Devil :smiling_imp: :smiling_imp: :smiling_imp: :fire: !!  
-This is the decentralized application, dApp :fire: !!  
+**No one can break a promise with Devil :smiling_imp: :smiling_imp: :smiling_imp: :fire: !!  
+There is no owner :fire: !!  Because this is the decentralized application, dApp :fire: !!  
 Blockchain like Ethereum makes it possible :fire: !!**  
 
 ## Sequence figures
