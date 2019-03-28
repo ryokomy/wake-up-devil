@@ -9,7 +9,11 @@ There are two main contracts (two main roles).
 You have to pay to Devil when you oversleep.  
 RobinHood steals it from devil and send it to [UNICEF donation address](https://www.unicef.org.nz/donate-in-crypto).
 
-Please refer to the following sequence figures for more detail. 
+### English
+![](https://github.com/ryokomy/wake-up-devil/blob/master/images/summary_en.jpg)  
+
+### Japanese
+![](https://github.com/ryokomy/wake-up-devil/blob/master/images/summary_ja.jpg)  
 
 ## Important :fire:
 **No one can break a promise with Devil :smiling_imp: :smiling_imp: :smiling_imp: :fire: !!  
@@ -18,6 +22,6 @@ Blockchain like Ethereum makes it possible :fire: !!**
 
 ## Sequence figures
 ### English
-![](https://github.com/ryokomy/wake-up-devil/blob/master/out/docs/sequence_en/SEQUENCE_EN.png)
+![](https://github.com/ryokomy/wake-up-devil/blob/master/images/sequence_en.png)
 ### Japanese
-![](https://github.com/ryokomy/wake-up-devil/blob/master/out/docs/sequence_simple_jp/SEQUENCE_SIMPLE_JP.png)
+![](https://github.com/ryokomy/wake-up-devil/blob/master/images/sequence_simple_ja.png)
